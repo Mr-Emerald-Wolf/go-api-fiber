@@ -40,14 +40,14 @@ func ValidateStruct[T any](payload T) []*ErrorResponse {
 }
 
 type CreateProductSchema struct {
-	Name      string `json:"Name" validate:"required"`
+	Name      string `json:"name" validate:"required"`
 	Price     int    `json:"price" validate:"required"`
 	Category  string `json:"category,omitempty"`
 	Published bool   `json:"published,omitempty"`
 }
 
 type UpdateProductSchema struct {
-	Name      string `json:"Name,omitempty"`
+	Name      string `json:"name,omitempty"`
 	Price     int    `json:"price,omitempty"`
 	Category  string `json:"category,omitempty"`
 	Published *bool  `json:"published,omitempty"`

@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"fmt"
 	"strconv"
 	"strings"
 	"time"
@@ -58,7 +59,7 @@ func FindProducts(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusBadGateway).JSON(fiber.Map{"status": "error", "message": results.Error})
 	}
 
-	return c.Status(fiber.StatusOK).JSON(fiber.Map{"status": "success", "results": len(products), "notes": products})
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{"status": "success", "results": len(products), "products": products})
 }
 
 func UpdateProduct(c *fiber.Ctx) error {
@@ -87,7 +88,7 @@ func UpdateProduct(c *fiber.Ctx) error {
 		updates["category"] = payload.Category
 	}
 	if payload.Price != 0 {
-		updates["content"] = payload.Price
+		updates["price"] = payload.Price
 	}
 
 	if payload.Published != nil {
@@ -95,6 +96,8 @@ func UpdateProduct(c *fiber.Ctx) error {
 	}
 
 	updates["updated_at"] = time.Now()
+
+	fmt.Println(updates)
 
 	initializers.DB.Model(&product).Updates(updates)
 
@@ -105,7 +108,7 @@ func FindProductById(c *fiber.Ctx) error {
 	productId := c.Params("productId")
 	// Get the product
 	product := models.Product{}
-	result := initializers.DB.First(&product, productId)
+	result := initializers.DB.First(&product, "id = ?", productId)
 
 	if result.Error != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"status":"fail", "err":result.Error.Error()})
@@ -118,7 +121,7 @@ func DeleteProduct(c *fiber.Ctx) error {
 	productId := c.Params("productId")
 	// Get the product 
 	product := models.Product{}
-	result := initializers.DB.First(&product, productId)
+	result := initializers.DB.First(&product, "id = ?", productId)
 
 	if result.Error != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"status":"fail", "message":"Product Not Found" ,"err":result.Error.Error()})

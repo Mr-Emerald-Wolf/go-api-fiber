@@ -10,7 +10,7 @@ func ProductRoutes(app *fiber.App) {
 	product.Post("/create", controllers.CreateProduct)
 	product.Get("/findall", controllers.FindProducts)
 	product.Delete("/delete/:productId", controllers.DeleteProduct)
-	product.Get("/find/:productid", controllers.FindProductById)
+	product.Get("/find/:productId", controllers.FindProductById)
 	product.Put("/update/:productId", controllers.UpdateProduct)
 
 }
