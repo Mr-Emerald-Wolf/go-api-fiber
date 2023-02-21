@@ -9,6 +9,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/mr-emerald-wolf/go-api-fiber/initializers"
 	"github.com/mr-emerald-wolf/go-api-fiber/models"
+	"github.com/mr-emerald-wolf/go-api-fiber/utils"
 	"gorm.io/gorm"
 )
 
@@ -19,7 +20,7 @@ func CreateProduct(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"status": "fail", "message": err.Error()})
 	}
 
-	errors := models.ValidateStruct(payload)
+	errors := utils.ValidateStruct(payload)
 	if errors != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(errors)
 
@@ -111,29 +112,29 @@ func FindProductById(c *fiber.Ctx) error {
 	result := initializers.DB.First(&product, "id = ?", productId)
 
 	if result.Error != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"status":"fail", "err":result.Error.Error()})
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"status": "fail", "err": result.Error.Error()})
 		// log.Fatal(result.Error)
 	}
-	return c.Status(fiber.StatusOK).JSON(fiber.Map{"status":"success", "product": product})
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{"status": "success", "product": product})
 }
 
 func DeleteProduct(c *fiber.Ctx) error {
 	productId := c.Params("productId")
-	// Get the product 
+	// Get the product
 	product := models.Product{}
 	result := initializers.DB.First(&product, "id = ?", productId)
 
 	if result.Error != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"status":"fail", "message":"Product Not Found" ,"err":result.Error.Error()})
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"status": "fail", "message": "Product Not Found", "err": result.Error.Error()})
 		// log.Fatal(result.Error)
 	}
 
 	result = initializers.DB.Delete(&models.Product{}, "id = ?", productId)
 
 	if result.Error != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"status":"fail", "message":"Product Not Deleted" ,"err":result.Error.Error()})
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"status": "fail", "message": "Product Not Deleted", "err": result.Error.Error()})
 		// log.Fatal(result.Error)
 	}
 
-	return c.Status(fiber.StatusOK).JSON(fiber.Map{"status":"success", "message": "Product Deleted"})
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{"status": "success", "message": "Product Deleted"})
 }
