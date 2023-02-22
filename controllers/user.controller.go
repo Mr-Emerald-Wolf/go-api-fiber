@@ -127,3 +127,15 @@ func DeleteUser(c *fiber.Ctx) error {
 
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{"status": "success", "message": "User Deleted"})
 }
+
+func GetMe(c *fiber.Ctx) error {
+	email := c.GetRespHeader("currentUser")
+	user := models.User{}
+
+	result := initializers.DB.First(&user, "email = ?", fmt.Sprint(email))
+	if result.Error != nil {
+		return c.Status(fiber.StatusForbidden).JSON(fiber.Map{"status": "fail", "message": "the user belonging to this token no logger exists"})
+	}
+
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{"status": "success", "user": user})
+}
