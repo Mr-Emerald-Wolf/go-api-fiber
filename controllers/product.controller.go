@@ -47,6 +47,7 @@ func CreateProduct(c *fiber.Ctx) error {
 }
 
 func FindProducts(c *fiber.Ctx) error {
+
 	var page = c.Query("page", "1")
 	var limit = c.Query("limit", "10")
 
